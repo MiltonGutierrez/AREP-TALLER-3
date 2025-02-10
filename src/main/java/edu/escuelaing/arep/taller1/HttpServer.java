@@ -1,10 +1,10 @@
 package edu.escuelaing.arep.taller1;
 
-import edu.escuelaing.arep.taller1.Controller.NoteController;
-import edu.escuelaing.arep.taller1.Controller.NoteControllerImpl;
-import edu.escuelaing.arep.taller1.Http.HttpRequest;
-import edu.escuelaing.arep.taller1.Http.HttpResponse;
-import edu.escuelaing.arep.taller1.Services.NoteServicesImpl;
+import edu.escuelaing.arep.taller1.controller.NoteControllerImpl;
+import edu.escuelaing.arep.taller1.http.HttpRequest;
+import edu.escuelaing.arep.taller1.http.HttpResponse;
+
+
 import java.net.*;
 import java.util.function.BiFunction;
 import java.io.*;
@@ -15,13 +15,9 @@ public class HttpServer {
     public static String WEB_ROOT;
     private static String INDEX_PAGE_URI = "/notes.html";
     private static boolean RUNNING = true;
-    private static final NoteController noteController = new NoteControllerImpl(new NoteServicesImpl());
+    private static final NoteControllerImpl noteController = new NoteControllerImpl();
     private static final String HTTP_400_BAD_REQUEST = "HTTP/1.1 400 Bad Request";
 
-    public static void main(String[] args) throws IOException {
-        HttpServer.staticfiles("target/classes/webroot");
-        HttpServer.runServer();
-    }
 
     public static void setIndexPageUri(String uri) {
         INDEX_PAGE_URI = uri;
@@ -31,18 +27,23 @@ public class HttpServer {
         WEB_ROOT = path;
     }
 
-    public static void runServer() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(PORT);
-        System.out.println("Server started at port: " + PORT);
-        while (RUNNING) {
-            Socket clientSocket = null;
-            clientSocket = serverSocket.accept();
+    public static void runServer() {
+        try {
+            ServerSocket serverSocket = new ServerSocket(PORT);
+            System.out.println("Server started at port: " + PORT);
+            while (RUNNING) {
+                Socket clientSocket = null;
+                clientSocket = serverSocket.accept();
 
-            if (clientSocket != null) {
-                handleRequests(clientSocket);
+                if (clientSocket != null) {
+                    handleRequests(clientSocket);
+                }
             }
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        serverSocket.close();
+
     }
 
     private static void handleRequests(Socket clientSocket) throws IOException {
@@ -51,25 +52,24 @@ public class HttpServer {
         BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
 
         String readline = in.readLine();
-        String[] parts =  readline.split(" ");
+        if (readline == null)
+            return;
+
+        String[] parts = readline.split(" ");
         String httpVerb = parts[0];
         String resource = parts[1].equals("/") ? INDEX_PAGE_URI : parts[1];
         URI resourceUri = URI.create(resource);
-        HttpRequest req = new HttpRequest(resourceUri.getPath(), resourceUri.getQuery());
-        HttpResponse res = new HttpResponse();
 
         if (httpVerb.equals("GET") && !resource.startsWith("/app")) {
             handleGetRequests(resource, out, dataOut);
-        } else if (httpVerb.equals("GET") && resource.startsWith("/app")) {
-            handleAppGetRequests(req, res, out);
-        } else if (httpVerb.equals("POST") && resource.startsWith("/app")) {
-            handleAppPostRequests(req, res, out);
-        }
-        else{
+        } else if (resource.startsWith("/app")) {
+            handleAppRequests(httpVerb, resourceUri, out);
+        } else if (resource.startsWith("/spring")) {
+            out.flush();
+        } else {
             out.println(HTTP_400_BAD_REQUEST);
             out.println("Content-Type: text/html");
             out.println("\r\n");
-            out.println("<html><body><h1>400 Bad Request</h1></body></html>");
             out.println("<html><body><h1>400 Bad Request</h1></body></html>");
             out.flush();
         }
@@ -78,28 +78,40 @@ public class HttpServer {
         clientSocket.close();
     }
 
+    private static void handleAppRequests(String method, URI resourceUri, PrintWriter out) {
+        HttpRequest req = new HttpRequest(resourceUri.getPath(), resourceUri.getQuery());
+        HttpResponse res = new HttpResponse();
+        if (method.equals("GET")) {
+            handleAppGetRequests(req, res, out);
+        } else if (method.equals("POST")) {
+            handleAppPostRequests(req, res, out);
+        }
+    }
+
     private static void handleAppGetRequests(HttpRequest req, HttpResponse res, PrintWriter out) {
-        BiFunction<HttpRequest, HttpResponse, String> service = noteController.getServices(req.getPath());
         StringBuilder response = new StringBuilder();
-        if (service != null) {
+        try {
+            BiFunction<HttpRequest, HttpResponse, String> service = noteController.getServices(req.getPath());
             response.append("HTTP/1.1 200 OK\r\n");
             response.append("Content-Type: application/json\r\n");
             response.append("\r\n");
             response.append(service.apply(req, res));
-        } else {
+        } catch (Exception e) {
+            response = new StringBuilder();
             response.append("HTTP/1.1 404 Not Found\r\n");
             response.append("Content-Type: text/html\r\n");
             response.append("\r\n");
             response.append("<html><body><h1>404 Not Found</h1></body></html>");
+        } finally {
+            out.print(response.toString());
+            out.flush();
         }
-        out.print(response.toString());
-        out.flush();
     }
 
     private static void handleAppPostRequests(HttpRequest req, HttpResponse res, PrintWriter out) {
-        BiFunction<HttpRequest, HttpResponse, String> service = noteController.postServices(req.getPath());
         StringBuilder response = new StringBuilder();
-        if(service != null ){
+        try {
+            BiFunction<HttpRequest, HttpResponse, String> service = noteController.postServices(req.getPath());
             String jsonResponse = service.apply(req, res);
             if (jsonResponse.startsWith("{ \"error\":")) {
                 response.append(HTTP_400_BAD_REQUEST);
@@ -113,14 +125,15 @@ public class HttpServer {
             response.append("\r\n");
             response.append(jsonResponse);
             }
-        } else {
+        } catch (Exception e) {
             response.append(HTTP_400_BAD_REQUEST);
             response.append("Content-Type: text/html");
             response.append("\r\n");
-            response.append("{ \"error\": " + "\""+ "Invalid POST request" + "\"}");
+            response.append("{ \"error\": " + "\"" + "Invalid POST request" + "\"}");
+        } finally {
+            out.print(response.toString());
+            out.flush();
         }
-        out.print(response.toString());
-        out.flush();
     }
 
     private static void handleGetRequests(String requestedResource, PrintWriter out, BufferedOutputStream dataOut)

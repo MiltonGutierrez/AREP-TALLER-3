@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller1.Http;
+package edu.escuelaing.arep.taller1.http;
 
 public class HttpResponse {
     

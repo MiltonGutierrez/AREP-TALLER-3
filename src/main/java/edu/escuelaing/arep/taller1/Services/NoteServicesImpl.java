@@ -1,16 +1,16 @@
-package edu.escuelaing.arep.taller1.Services;
+package edu.escuelaing.arep.taller1.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-import edu.escuelaing.arep.taller1.Model.Note;
-import edu.escuelaing.arep.taller1.Model.NoteGroup;
-import edu.escuelaing.arep.taller1.Services.Exception.NoteServicesException;
+import edu.escuelaing.arep.taller1.model.Note;
+import edu.escuelaing.arep.taller1.model.NoteGroup;
+import edu.escuelaing.arep.taller1.services.exception.NoteServicesException;
 
-public class NoteServicesImpl implements NoteServices{
+public class NoteServicesImpl implements NoteServices {
 
     private ArrayList<Note> notes = new ArrayList<>();
-
 
     @Override
     public ArrayList<Note> getNotes() {
@@ -28,9 +28,20 @@ public class NoteServicesImpl implements NoteServices{
         } catch (IllegalArgumentException e) {
             throw new NoteServicesException(NoteServicesException.INVALID_GROUP);
         }
-       
+
     }
 
-        
-    
+    @Override
+    public String getNotesAsJSON() {
+        return "[" + getNotes().stream()
+                .map(note -> String.format(
+                        "{\"title\":\"%s\", \"group\":\"%s\", \"content\":\"%s\", \"date\":\"%s\"}",
+                        note.getTitle(),
+                        note.getGroup().name(),
+                        note.getContent(),
+                        note.getDate().toString()))
+                .collect(Collectors.joining(","))
+                + "]";
+    }
+
 }

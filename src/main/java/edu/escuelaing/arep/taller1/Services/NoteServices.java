@@ -1,11 +1,13 @@
-package edu.escuelaing.arep.taller1.Services;
+package edu.escuelaing.arep.taller1.services;
 
 import java.util.ArrayList;
-import edu.escuelaing.arep.taller1.Model.Note;
-import edu.escuelaing.arep.taller1.Services.Exception.NoteServicesException;
+
+import edu.escuelaing.arep.taller1.model.Note;
+import edu.escuelaing.arep.taller1.services.exception.NoteServicesException;
 
 
 public interface NoteServices {
     ArrayList<Note> getNotes();
     void addNote(String title, String group, String content) throws NoteServicesException;
+    String getNotesAsJSON();
 }

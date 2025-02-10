@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller1.Services.Exception;
+package edu.escuelaing.arep.taller1.services.exception;
 
 public class NoteServicesException extends Exception {
 

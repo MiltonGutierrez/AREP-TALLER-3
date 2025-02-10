@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller1.Model;
+package edu.escuelaing.arep.taller1.model;
 
 import java.time.LocalDate;
 

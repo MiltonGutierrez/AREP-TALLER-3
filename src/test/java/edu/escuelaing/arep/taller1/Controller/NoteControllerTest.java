@@ -1,28 +1,62 @@
-package edu.escuelaing.arep.taller1.Controller;
+package edu.escuelaing.arep.taller1.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import static edu.escuelaing.arep.taller1.controller.NoteControllerImpl.get;
+import static edu.escuelaing.arep.taller1.controller.NoteControllerImpl.post;
+import edu.escuelaing.arep.taller1.controller.NoteControllerImpl;
+import edu.escuelaing.arep.taller1.http.HttpRequest;
+import edu.escuelaing.arep.taller1.http.HttpResponse;
+import edu.escuelaing.arep.taller1.services.exception.NoteServicesException;
+import edu.escuelaing.arep.taller1.services.NoteServices;
+import edu.escuelaing.arep.taller1.services.NoteServicesImpl;
 
-import edu.escuelaing.arep.taller1.Http.HttpResponse;
-import edu.escuelaing.arep.taller1.Http.HttpRequest;
-import edu.escuelaing.arep.taller1.Services.NoteServices;
-import edu.escuelaing.arep.taller1.Services.NoteServicesImpl;
-import edu.escuelaing.arep.taller1.Services.Exception.NoteServicesException;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Collectors;
 
 
 class NoteControllerTest {
 
-    private NoteController noteController;
+    private NoteControllerImpl noteController;
     private NoteServices noteServices;
 
     @BeforeEach
     public void setUp() {
         noteServices = new NoteServicesImpl();
-        noteController = new NoteControllerImpl(noteServices);
+        noteController = new NoteControllerImpl();
+
+        get("/note", (req, res) -> {
+            return "[" + noteServices.getNotes().stream()
+                    .map(note -> String.format(
+                            "{\"title\":\"%s\", \"group\":\"%s\", \"content\":\"%s\", \"date\":\"%s\"}",
+                            note.getTitle(),
+                            note.getGroup().name(),
+                            note.getContent(),
+                            note.getDate().toString()))
+                    .collect(Collectors.joining(","))
+                    + "]";
+        });
+
+        get("/pi", (req, resp) -> {
+            return String.valueOf(Math.PI);
+        });
+
+        post("/note", (req, res) -> {
+            String title = req.getQueryParams().get("title");
+            String group = req.getQueryParams().get("group");
+            String content = req.getQueryParams().get("content");
+            try {
+                noteServices.addNote(title, group, content);
+                return "{ \"title\": " + "\"" + title + "\", " + "\"group\": " + "\"" + group + "\", "
+                        + "\"content\": " + "\"" + content + "\" " + "}";
+            } catch (Exception e) {
+                return "{ \"error\": " + "\"" + e.getMessage() + "\"}";
+            }
+        });
     }
 
     @Test
