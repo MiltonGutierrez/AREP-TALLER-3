@@ -3,7 +3,9 @@ package edu.escuelaing.arep.taller1.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.escuelaing.arep.taller1.services.exception.NoteServicesException;
+import edu.escuelaing.arep.taller3.services.NoteServices;
+import edu.escuelaing.arep.taller3.services.NoteServicesImpl;
+import edu.escuelaing.arep.taller3.services.exception.NoteServicesException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

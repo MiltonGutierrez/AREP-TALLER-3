@@ -1,12 +1,12 @@
-package edu.escuelaing.arep.taller1;
-
-import edu.escuelaing.arep.taller1.controller.NoteControllerImpl;
-import edu.escuelaing.arep.taller1.http.HttpRequest;
-import edu.escuelaing.arep.taller1.http.HttpResponse;
-
+package edu.escuelaing.arep.taller3;
 
 import java.net.*;
 import java.util.function.BiFunction;
+
+import edu.escuelaing.arep.taller3.controller.NoteControllerImpl;
+import edu.escuelaing.arep.taller3.http.HttpRequest;
+import edu.escuelaing.arep.taller3.http.HttpResponse;
+
 import java.io.*;
 
 public class HttpServer {

@@ -1,12 +1,12 @@
-package edu.escuelaing.arep.taller1.services;
+package edu.escuelaing.arep.taller3.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import edu.escuelaing.arep.taller1.model.Note;
-import edu.escuelaing.arep.taller1.model.NoteGroup;
-import edu.escuelaing.arep.taller1.services.exception.NoteServicesException;
+import edu.escuelaing.arep.taller3.model.Note;
+import edu.escuelaing.arep.taller3.model.NoteGroup;
+import edu.escuelaing.arep.taller3.services.exception.NoteServicesException;
 
 public class NoteServicesImpl implements NoteServices {
 

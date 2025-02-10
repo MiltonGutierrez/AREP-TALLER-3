@@ -4,16 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import static edu.escuelaing.arep.taller1.controller.NoteControllerImpl.get;
-import static edu.escuelaing.arep.taller1.controller.NoteControllerImpl.post;
-import edu.escuelaing.arep.taller1.controller.NoteControllerImpl;
-import edu.escuelaing.arep.taller1.http.HttpRequest;
-import edu.escuelaing.arep.taller1.http.HttpResponse;
-import edu.escuelaing.arep.taller1.services.exception.NoteServicesException;
-import edu.escuelaing.arep.taller1.services.NoteServices;
-import edu.escuelaing.arep.taller1.services.NoteServicesImpl;
 
+import edu.escuelaing.arep.taller3.controller.NoteControllerImpl;
+import edu.escuelaing.arep.taller3.http.HttpRequest;
+import edu.escuelaing.arep.taller3.http.HttpResponse;
+import edu.escuelaing.arep.taller3.services.NoteServices;
+import edu.escuelaing.arep.taller3.services.NoteServicesImpl;
+import edu.escuelaing.arep.taller3.services.exception.NoteServicesException;
 
+import static edu.escuelaing.arep.taller3.controller.NoteControllerImpl.get;
+import static edu.escuelaing.arep.taller3.controller.NoteControllerImpl.post;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Collectors;

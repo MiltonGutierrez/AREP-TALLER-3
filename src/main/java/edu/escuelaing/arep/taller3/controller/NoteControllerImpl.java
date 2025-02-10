@@ -1,11 +1,11 @@
-package edu.escuelaing.arep.taller1.controller;
+package edu.escuelaing.arep.taller3.controller;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import edu.escuelaing.arep.taller1.http.HttpRequest;
-import edu.escuelaing.arep.taller1.http.HttpResponse;
+import edu.escuelaing.arep.taller3.http.HttpRequest;
+import edu.escuelaing.arep.taller3.http.HttpResponse;
 
 public class NoteControllerImpl {
 
