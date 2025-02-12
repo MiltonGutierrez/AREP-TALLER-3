@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import edu.escuelaing.arep.taller3.controller.NoteControllerImpl;
 import edu.escuelaing.arep.taller3.http.HttpRequest;
 import edu.escuelaing.arep.taller3.http.HttpResponse;
+import static edu.escuelaing.arep.taller3.server.MicroSpring.callMicroSpringService;
 
 import java.io.*;
 
@@ -60,12 +61,15 @@ public class HttpServer {
         String resource = parts[1].equals("/") ? INDEX_PAGE_URI : parts[1];
         URI resourceUri = URI.create(resource);
 
-        if (httpVerb.equals("GET") && !resource.startsWith("/app")) {
+        if (httpVerb.equals("GET") && !resource.startsWith("/app") && !resource.startsWith("/spring")) {
+            System.out.println("GET request for: " + resource);
             handleGetRequests(resource, out, dataOut);
         } else if (resource.startsWith("/app")) {
+            System.out.println("Request APP for: " + resource);
             handleAppRequests(httpVerb, resourceUri, out);
         } else if (resource.startsWith("/spring")) {
-            out.flush();
+            System.out.println("Request SPRING for: " + resource);
+            handleSpringRequests(httpVerb, resourceUri,out);
         } else {
             out.println(HTTP_400_BAD_REQUEST);
             out.println("Content-Type: text/html");
@@ -76,6 +80,13 @@ public class HttpServer {
         out.close();
         in.close();
         clientSocket.close();
+    }
+
+    private static void handleSpringRequests(String method, URI resourceUri, PrintWriter out) {
+        HttpRequest req = new HttpRequest(resourceUri.getPath(), resourceUri.getQuery());
+        System.out.println(callMicroSpringService(req));
+        out.print(callMicroSpringService(req));
+        out.flush();
     }
 
     private static void handleAppRequests(String method, URI resourceUri, PrintWriter out) {

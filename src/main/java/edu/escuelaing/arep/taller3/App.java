@@ -4,6 +4,8 @@ import static edu.escuelaing.arep.taller3.HttpServer.staticfiles;
 import static edu.escuelaing.arep.taller3.controller.NoteControllerImpl.get;
 import static edu.escuelaing.arep.taller3.controller.NoteControllerImpl.post;
 
+import edu.escuelaing.arep.taller3.server.ClassFileScanner;
+import edu.escuelaing.arep.taller3.server.MicroSpring;
 import edu.escuelaing.arep.taller3.services.NoteServicesImpl;
 
 public class App {
@@ -33,6 +35,8 @@ public class App {
                 return "{ \"error\": " + "\"" + e.getMessage() + "\"}";
             }
         });
+
+        MicroSpring.start();
 
         HttpServer.runServer();
 
