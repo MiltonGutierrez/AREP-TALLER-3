@@ -9,6 +9,6 @@ public class GretingController {
 
     @GetMapping("/spring/hello")
     public static String greeting(@RequestParam(value = "name", defaultValue = "world")String name) {
-        return "Hello " + name + " !";
+        return "Hello " + name + "!";
     }
 }
