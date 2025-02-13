@@ -9,10 +9,16 @@
 </head>
 <body>
     <h1 style="text-align: center; color: white;">Create Notes</h1>
+    <form id="greeting">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Write your name">
+        <button type="button" onclick="notes.greeting(document.getElementById('name').value)">Get greeted</button>
+        <span id="greetingMessage"></span>
+    </form>
 
     <form id="noteForm">
         <label for="title">Title</label>
-        <input type="text" id="title" name="title" placeholder="Ingresa el título" required>
+        <input type="text" id="title" name="title" placeholder="Write the note's title" required>
 
         <label for="group">Group</label>
         <select id="group" name="group" required>

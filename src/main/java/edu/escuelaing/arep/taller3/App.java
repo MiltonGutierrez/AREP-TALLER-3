@@ -1,10 +1,11 @@
 package edu.escuelaing.arep.taller3;
 
-import static edu.escuelaing.arep.taller3.HttpServer.staticfiles;
 import static edu.escuelaing.arep.taller3.controller.NoteControllerImpl.get;
 import static edu.escuelaing.arep.taller3.controller.NoteControllerImpl.post;
+import static edu.escuelaing.arep.taller3.server.HttpServer.staticfiles;
 
 import edu.escuelaing.arep.taller3.server.ClassFileScanner;
+import edu.escuelaing.arep.taller3.server.HttpServer;
 import edu.escuelaing.arep.taller3.server.MicroSpring;
 import edu.escuelaing.arep.taller3.services.NoteServicesImpl;
 

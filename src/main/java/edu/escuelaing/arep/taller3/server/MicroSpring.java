@@ -83,7 +83,7 @@ public class MicroSpring {
         Map<String, String> params = req.getQueryParams(); 
         Parameter[] parameters = service.getParameters();
         Object[] args = getArgs(params, parameters);
-        String result = "{ \"name\": " + "\"" + service.invoke(null, args) + "\" " + "}";
+        String result = "{ \"greeting\": " + "\"" + service.invoke(null, args) + "\" " + "}";
         response.append("HTTP/1.1 200 OK\r\n");
         response.append("Content-Type: application/json\r\n");
         response.append("\r\n");
@@ -91,6 +91,12 @@ public class MicroSpring {
         return response.toString();
     }
 
+    /**
+     * 
+     * @param params
+     * @param parameters
+     * @return arguments of the method. for the momentm when there's a RequestParam annotation it adds the value otherwise it ignores it
+     */
     private static Object[] getArgs(Map<String, String> params, Parameter[] parameters ){
         Object[] args = new Object[parameters.length];
         for(int i = 0; i < parameters.length; i++){
@@ -100,9 +106,6 @@ public class MicroSpring {
                 if(requestParam != null){
                     args[i] = params.getOrDefault(requestParam.value(), requestParam.defaultValue());
                 }
-            }
-            else{
-                args[i] = parameter;
             }
         }
         return args;

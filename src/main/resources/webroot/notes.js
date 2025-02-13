@@ -49,8 +49,19 @@ const notes = (() => {
         }
      };
 
+    const greeting = async (name) => {
+        try{
+            let greeting = await api.greeting(name);
+            document.getElementById('greetingMessage').textContent = greeting.greeting;
+        }
+        catch (error) {
+            console.error(error);
+        }
+    };
+
     return {
         getNotes,
-        addNote
+        addNote,
+        greeting
     }
 })();

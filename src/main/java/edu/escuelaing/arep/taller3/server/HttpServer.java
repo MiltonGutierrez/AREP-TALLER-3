@@ -1,4 +1,4 @@
-package edu.escuelaing.arep.taller3;
+package edu.escuelaing.arep.taller3.server;
 
 import java.net.*;
 import java.util.function.BiFunction;
