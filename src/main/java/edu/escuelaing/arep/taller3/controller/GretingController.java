@@ -8,7 +8,7 @@ import edu.escuelaing.arep.taller3.server.annotations.RestController;
 public class GretingController {
 
     @GetMapping("/spring/hello")
-    public static String greeting(@RequestParam(value = "nam", defaultValue = "world")String name) {
+    public static String greeting(@RequestParam(value = "name", defaultValue = "world")String name) {
         return "Hola " + name;
     }
 }
